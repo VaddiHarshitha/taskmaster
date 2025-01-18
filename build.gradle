@@ -23,7 +23,9 @@ configurations {
 repositories {
 	mavenCentral()
 }
-
+application {
+    mainClass = 'com.taskmaster.Main' // Replace with your actual entry point
+}
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
