@@ -36,5 +36,4 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
-	mainClass = 'com.taskmaster.MainClass'
 }
