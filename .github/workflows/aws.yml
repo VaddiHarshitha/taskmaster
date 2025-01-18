@@ -1,24 +1,39 @@
-name: CI/CD Pipeline
+name: Build Docker Image
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      # Step 1: Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v3  # Updated to v3
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
+      # Step 2: Set up Docker Buildx (optional, for multi-platform builds)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # Step 3: Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t my-spring-boot-taskmaster:${{ github.sha }} .
+
+      # Step 4: Save the Docker image as tarball
+      - name: Save Docker image as tarball
+        run: |
+          docker save my-spring-boot-taskmaster:${{ github.sha }} -o my-spring-boot-taskmaster.tar
+
+      # Step 5: Upload the tarball as an artifact
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v3  # Updated to v3
         with:
-          java-version: 11
-
-      - name: Build with Maven
-        run: mvn clean package
-
-      - name: Build Docker Image
-        run: docker build -t taskmaster-app .
+          name: docker-image
+          path: my-spring-boot-taskmaster.tar
